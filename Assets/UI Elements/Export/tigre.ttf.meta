@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 6864619fa215fcf429730a536f46e3ce
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Tigre
+  fontNames:
+  - Tigre
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: fcec8a7e48258a84b88b4d450cf0c705, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
