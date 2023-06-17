@@ -29,10 +29,10 @@ namespace Visyde
                         p.isOnJumpPad = true;
 
                         // Apply the force:
-                        Vector2 veloc = p.movementController.velocity;
-                        veloc.y = force;
-                        p.movementController.velocity = veloc;
-                        photonView.RPC("Jumped", RpcTarget.All);
+                        //Vector2 veloc = p.movementController.velocity;
+                        //veloc.y = force;
+                        //p.movementController.velocity = veloc;
+                        //photonView.RPC("Jumped", RpcTarget.All);
                     }
                 }
             }

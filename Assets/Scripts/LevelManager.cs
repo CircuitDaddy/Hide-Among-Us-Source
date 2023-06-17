@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
     {
         if (hiding)
         {
-            Debug.LogError("Hiding");
+            Debug.Log("Hiding");
             joyStick.gameObject.SetActive(false);
             player.transform.GetChild(1).GetComponent<CapsuleCollider2D>().enabled = false;
             player.GetComponent<PlayerNetworkController>().PlayerHidingStatus(hiding);
@@ -51,7 +51,7 @@ public class LevelManager : MonoBehaviour
             //player.SetActive(true);
             if(uImanager.lostGame)
             {
-                Debug.LogError("lost game");
+                Debug.Log("lost game");
              //   yield return new WaitForSeconds(2);
               player.GetComponent<PlayerNetworkController>().PlayerDisappear(false);
 

@@ -23,7 +23,7 @@ namespace Visyde
         }
 
         public static void LogError(Component from, string message){
-            Debug.LogError("<color=magenta>(" + from.GetType() + ")</color>" + " <color=red>" + message + "</color>");
+           // Debug.LogError("<color=magenta>(" + from.GetType() + ")</color>" + " <color=red>" + message + "</color>");
         }
     }
 }

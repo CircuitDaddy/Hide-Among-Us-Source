@@ -15,7 +15,7 @@ namespace Visyde
         public enum MessageType { Death, Kill, LeftTheGame, Normal }
 
         [Header("Settings:")]
-        public string gameStartMessage = "Fight!";				// text to show when the match begins
+        public string gameStartMessage = "Hide!";				// text to show when the match begins
         public AudioClip[] countDownSFX;						// count down sounds
         public AudioClip killSFX;								// the audio to play when the player gets a kill
         public float multikillSfxPitchFactor = 0.15f;
@@ -159,17 +159,17 @@ namespace Visyde
                         t.text = curCountdown == 0 ? gameStartMessage : curCountdown.ToString();
 
                         // Show main panel when countdown is done:
-                     //   mainPanel.gameObject.SetActive(curCountdown == 0);
-
+                          mainPanel.gameObject.SetActive(curCountdown == 0);
+                        gm.ourPlayer.OnAttackControls();
                         // Sound:
-                        //if (curCountdown < countDownSFX.Length)
-                        //{
-                        //    mainAus.PlayOneShot(countDownSFX[curCountdown]);
+                        if (curCountdown < countDownSFX.Length)
+                        {
+                            //mainAus.PlayOneShot(countDownSFX[curCountdown]);
 
-                        //    // Refresh boards (just to make sure we're displaying the latest infos before the boards appear, not necessarily important):
-                        //    UpdateBoards();
-                        //}
-                        //curCountdown -= 1;
+                            // Refresh boards (just to make sure we're displaying the latest infos before the boards appear, not necessarily important):
+                            UpdateBoards();
+                        }
+                        curCountdown -= 1;
                     }
                 }
 
@@ -214,10 +214,10 @@ namespace Visyde
 
                 // Death screen:
                 deadPanel.SetActive(gm.dead);
-                if (gm.dead)
-                {
-                    respawnTimeText.text = Mathf.Floor(gm.curRespawnTime + 1).ToString();
-                }
+                //if (gm.dead)
+                //{
+                //    respawnTimeText.text = Mathf.Floor(gm.curRespawnTime + 1).ToString();
+                //}
 
                 // Show/Hide scoreboard :
                 scoreboardObj.SetActive(gm.controlsManager.showScoreboard);
@@ -325,7 +325,7 @@ namespace Visyde
             // Cam shake!
             if (gm.doCamShakesOnDamage)
             {
-              //  gm.gameCam.DoShake(gm.camShakeAmount, gm.camShakeDuration);
+                gm.gameCam.DoShake(gm.camShakeAmount, gm.camShakeDuration);
             }
         }
 

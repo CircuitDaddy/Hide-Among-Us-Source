@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
+using Photon.Pun.Demo.PunBasics;
 
 namespace Visyde
 {
@@ -59,10 +60,10 @@ namespace Visyde
         [Header("References:")]
         public ItemSpawner itemSpawner;
         public ControlsManager controlsManager;
-        //public UIManager ui;
+        public UIManager ui;
         public CameraController gameCam;                // The main camera in the game scene (used for the controls)
         public ObjectPooler pooler;
-
+        public int Assasins = 1;
         // if the starting countdown has already begun:
         public bool countdownStarted
         {
@@ -98,7 +99,7 @@ namespace Visyde
         public PlayerInstance[] bots;                                                   // Player instances of bots
         public PlayerInstance[] players;                                               // Player instances of human players (ours is first)
         [System.NonSerialized] public bool isGameOver;                                                          // is the game over?
-        [System.NonSerialized] public PlayerController ourPlayer;                                				// our player's player (the player object itself)
+        /*[System.NonSerialized]*/ public PlayerController ourPlayer;                                				// our player's player (the player object itself)
         public List<PlayerController> playerControllers = new List<PlayerController>();	// list of all player controllers currently in the scene
         [System.NonSerialized] public bool dead;
         [System.NonSerialized] public float curRespawnTime;
@@ -175,6 +176,11 @@ namespace Visyde
 
             // Start checking if all players are ready:
             InvokeRepeating("CheckIfAllPlayersReady", 1, 0.5f);
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("Assasins"))
+            {
+                Assasins = (int)PhotonNetwork.CurrentRoom.CustomProperties["Assasins"];
+                Debug.Log("Getting Assasins value" + Assasins);
+            }
         }
 
         void CheckIfAllPlayersReady()
@@ -206,6 +212,7 @@ namespace Visyde
         // Update is called once per frame
         void Update()
         {
+            
             if (!isGameOver)
             {
                 // Start the game when preparation countdown is finished:
@@ -216,6 +223,7 @@ namespace Visyde
                         // GAME HAS STARTED!
                         if (PhotonNetwork.IsMasterClient)
                         {
+                            Debug.Log("GameStarted" + gameStarted);
                             doneGameStart = true;
                             ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
                             h["started"] = true;
@@ -244,37 +252,37 @@ namespace Visyde
                 }
 
                 // Calculating the elapsed and remaining time:
-              //  CheckTime();
+                CheckTime();
 
-                // Finish game when elapsed time is greater than or equal to game length:
-                //if (elapsedTime + 1 >= gameLength && gameStarted && !isGameOver)
-                //{
-                //    // Post the player rankings:
-                //    if (PhotonNetwork.IsMasterClient)
-                //    {
-                //        // Get player list by order based on scores and also set "draw" to true (the player sorter will set this to false if not draw):
-                //        isDraw = true;
+                //Finish game when elapsed time is greater than or equal to game length:
+                if (elapsedTime + 1 >= gameLength && gameStarted && !isGameOver)
+                {
+                    // Post the player rankings:
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        // Get player list by order based on scores and also set "draw" to true (the player sorter will set this to false if not draw):
+                        isDraw = true;
 
-                //        // List of player names for the rankings:
-                //        PlayerInstance[] ps = SortPlayersByScore();
-                //        string[] p = new string[ps.Length];
-                //        for (int i = 0; i < ps.Length; i++)
-                //        {
-                //            p[i] = ps[i].playerName;
-                //        }
+                        // List of player names for the rankings:
+                        PlayerInstance[] ps = SortPlayersByScore();
+                        string[] p = new string[ps.Length];
+                        for (int i = 0; i < ps.Length; i++)
+                        {
+                            p[i] = ps[i].playerName;
+                        }
 
-                //        isDraw = ps.Length > 1 && isDraw;
+                        isDraw = ps.Length > 1 && isDraw;
 
-                //        // Mark as game over:
-                //        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-                //        h.Add("rankings", p);
-                //        h.Add("draw", isDraw);
-                //        PhotonNetwork.CurrentRoom.SetCustomProperties(h);
+                        // Mark as game over:
+                        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                        h.Add("rankings", p);
+                        h.Add("draw", isDraw);
+                        PhotonNetwork.CurrentRoom.SetCustomProperties(h);
 
-                //        // Hide room from lobby:
-                //        PhotonNetwork.CurrentRoom.IsVisible = false;
-                //    }
-                //}
+                        // Hide room from lobby:
+                        PhotonNetwork.CurrentRoom.IsVisible = false;
+                    }
+                }
 
                 // Check if game is over:
                 if (playerRankings.Length > 0){
@@ -315,13 +323,13 @@ namespace Visyde
         /// </summary>
         public void Spawn()
         {
-            Transform spawnPoint = maps[chosenMap].playerSpawnPoints[UnityEngine.Random.Range(0, maps[chosenMap].playerSpawnPoints.Count)];
+            Transform spawnPoint = maps[chosenMap].playerSpawnPoints[Random.Range(0, maps[chosenMap].playerSpawnPoints.Count)];
             // There are 2 values in the player's instatiation data. The first one is reserved and only used if the player is a bot, while the 
             // second is for the cosmetics (in this case we only have 1 which is for the chosen hat, but you can add as many as your game needs):
 
             GameObject playerTemp = PhotonNetwork.Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity, 0, new object[] { 0, DataCarrier.chosenHat });
             LevelManager.Instance.player = playerTemp;
-
+            playerTemp.name = PhotonNetwork.NickName;
             ourPlayer = playerTemp.GetComponent<PlayerController>();
 
             cineMachine.Follow = playerTemp.transform;
@@ -334,7 +342,7 @@ namespace Visyde
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            Transform spawnPoint = maps[chosenMap].playerSpawnPoints[UnityEngine.Random.Range(0, maps[chosenMap].playerSpawnPoints.Count)];
+            Transform spawnPoint = maps[chosenMap].playerSpawnPoints[Random.Range(0, maps[chosenMap].playerSpawnPoints.Count)];
             // Instantiate the bot. Bots are assigned with random hats (second value of the instantiation data):
             
             Debug.Log("Spawn Player");
@@ -355,7 +363,7 @@ namespace Visyde
             }
 
             // Display kill feed.
-           // ui.SomeoneKilledSomeone(GetPlayerInstance(dying), GetPlayerInstance(killer));
+            ui.SomeoneKilledSomeone(GetPlayerInstance(dying), GetPlayerInstance(killer));
         }
 
         /// <summary>
@@ -417,7 +425,17 @@ namespace Visyde
             System.Array.Sort(allPlayers, SortPlayers());
             return allPlayers;
         }
-
+        public int GetPlayerPositionInArray(int playerID)
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (players[i].playerID == playerID)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
         public PlayerInstance GetPlayerInstance(int playerID)
         {
             // Look in human player list:
@@ -503,7 +521,7 @@ namespace Visyde
                         Cosmetics cosmetics = new Cosmetics(bHats[i]);
 
                         // Create this bot's player instance (parameters: player ID, bot's name, not ours, is bot, chosen character, no cosmetic item, kills, deaths, otherScore):
-                        p[i] = new PlayerInstance(i + PhotonNetwork.CurrentRoom.MaxPlayers, bNames[i], false, true, bChars[i], cosmetics, Mathf.RoundToInt(bScores[i].x), Mathf.RoundToInt(bScores[i].y), Mathf.RoundToInt(bScores[i].z), null);
+                        p[i] = new PlayerInstance(i + PhotonNetwork.CurrentRoom.MaxPlayers, bNames[i], false, true, bChars[i], cosmetics, Mathf.RoundToInt(bScores[i].x), Mathf.RoundToInt(bScores[i].y), Mathf.RoundToInt(bScores[i].z), null, true);
                     }
                 }
                 // ...otherwise, we can just set the stats directly:
@@ -536,13 +554,13 @@ namespace Visyde
                     Cosmetics cosmetics = new Cosmetics(c[0]);
 
                     // Then create the player instance:
-                    p[i] = new PlayerInstance(punPlayersAll[i].ActorNumber, punPlayersAll[i].NickName, punPlayersAll[i].IsLocal, false, 
-                        (int)punPlayersAll[i].CustomProperties["character"], 
+                    p[i] = new PlayerInstance(punPlayersAll[i].ActorNumber, punPlayersAll[i].NickName, punPlayersAll[i].IsLocal, false,
+                        (int)punPlayersAll[i].CustomProperties["character"],
                         cosmetics,
                         (int)punPlayersAll[i].CustomProperties["kills"],
                         (int)punPlayersAll[i].CustomProperties["deaths"],
                         (int)punPlayersAll[i].CustomProperties["otherScore"],
-                        punPlayersAll[i]);
+                        punPlayersAll[i], i < Assasins ? true : false);
                 }
             }
             // ...otherwise, we can just set the stats directly:
@@ -624,13 +642,17 @@ namespace Visyde
         public override void OnLeftRoom()
         {
             DataCarrier.message = "";
-            Debug.LogError("Left Room");
+            Debug.Log("Left Room");
             DataCarrier.LoadScene("MainMenu");
         }
         public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             if (propertiesThatChanged.ContainsKey("started")){
                 gameStarted = (bool)PhotonNetwork.CurrentRoom.CustomProperties["started"];
+            }
+            if (propertiesThatChanged.ContainsKey("Assasins"))
+            {
+                Assasins = (int)PhotonNetwork.CurrentRoom.CustomProperties["Assasins"];
             }
             if (propertiesThatChanged.ContainsKey("gameStartsIn"))
             {
@@ -670,7 +692,7 @@ namespace Visyde
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
             SetPlayerInstance(targetPlayer);
-        //    ui.UpdateBoards();
+            ui.UpdateBoards();
         }
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
@@ -690,9 +712,9 @@ namespace Visyde
             punPlayersAll = PhotonNetwork.PlayerList;
 
             players = GeneratePlayerInstances(true);
-            Debug.LogError("OnLeftRoom");
+            Debug.Log("OnLeftRoom");
             // Display a message when someone disconnects/left the game/room:
-       //     ui.DisplayMessage(otherPlayer.NickName + " left the match", UIManager.MessageType.LeftTheGame);
+            ui.DisplayMessage(otherPlayer.NickName + " left the match", UIManager.MessageType.LeftTheGame);
 
             // Refresh bot list (only if we have bots):
             if (hasBots)
@@ -701,7 +723,7 @@ namespace Visyde
             }
 
             // Other refreshes:
-        //    ui.UpdateBoards();
+            ui.UpdateBoards();
             CheckPlayersLeft();
         }
         public override void OnDisconnected(DisconnectCause cause)

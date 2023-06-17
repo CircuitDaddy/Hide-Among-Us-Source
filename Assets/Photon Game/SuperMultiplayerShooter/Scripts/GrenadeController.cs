@@ -26,7 +26,7 @@ namespace Visyde
         public GameObject graphic;
         public Rigidbody2D rg;
 
-        [HideInInspector] public PlayerInstance owner;
+        public PlayerInstance owner;
 
         // Network:
         Vector2 moveTo;
@@ -42,34 +42,34 @@ namespace Visyde
                 Vector2 throwDir = (Vector2)photonView.InstantiationData[0];
                 rg.AddForce(throwDir, ForceMode2D.Impulse);
 
-                Invoke("ExplodeCallFromOwner", delay);
+                Invoke(nameof(ExplodeCallFromOwner), delay);
             }
-
+            Debug.Log("Getting Data : " + (int)photonView.InstantiationData[1]);
             owner = GameManager.instance.GetPlayerInstance((int)photonView.InstantiationData[1]);
         }
 
         // Update is called once per frame
-        void Update()
-        {
-            // Positioning, rotation etc.:
-            if (photonView.IsMine)
-            {
-                //moveTo = rg.position;
-                //rotTo = rg.rotation;
-            }
-            else
-            {
-                //transform.position = Vector3.MoveTowards (transform.position, moveTo, Time.deltaTime * 10);
-                //rg.rotation = Mathf.MoveTowards (rg.rotation, rotTo, Time.deltaTime * 400);
-                rg.gravityScale = 0;
-            }
-        }
+        //void Update()
+        //{
+        //    // Positioning, rotation etc.:
+        //    if (photonView.IsMine)
+        //    {
+        //        //moveTo = rg.position;
+        //        //rotTo = rg.rotation;
+        //    }
+        //    else
+        //    {
+        //        //transform.position = Vector3.MoveTowards(transform.position, moveTo, Time.deltaTime * 10);
+        //        //rg.rotation = Mathf.MoveTowards(rg.rotation, rotTo, Time.deltaTime * 400);
+        //        rg.gravityScale = 0;
+        //    }
+        //}
 
         void OnCollisionEnter2D(Collision2D col)
         {
             if (photonView.IsMine && ((GameManager.instance.ourPlayer && col.transform.root != GameManager.instance.ourPlayer.transform) || !GameManager.instance.ourPlayer))
             {
-                photonView.RPC("CollisionSound", RpcTarget.All);
+                photonView.RPC(nameof(CollisionSound), RpcTarget.All);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Visyde
 
         void ExplodeCallFromOwner()
         {
-            photonView.RPC("Explode", RpcTarget.All);
+            photonView.RPC(nameof(Explode), RpcTarget.All);
         }
 
         [PunRPC]
@@ -93,7 +93,6 @@ namespace Visyde
             // Disable collider and graphic:
             GetComponent<Collider2D>().enabled = false;
             graphic.SetActive(false);
-
             // Damaging:
             if (photonView.IsMine)
             {

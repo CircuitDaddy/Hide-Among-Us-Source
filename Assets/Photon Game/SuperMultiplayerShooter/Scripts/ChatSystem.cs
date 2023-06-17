@@ -90,7 +90,7 @@ namespace Visyde
         public GameObject chatTab;
         public void CloseChat()
         {
-            Debug.LogError(LevelManager.Instance.hiding);
+            Debug.Log(LevelManager.Instance.hiding);
             chatTab.SetActive(false);
             if (!LevelManager.Instance.hiding)
             {

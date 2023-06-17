@@ -107,7 +107,7 @@ public class PlayerMovementController : MonoBehaviour
             if(isMine)
             {
                 movementSpeed = 200f;
-                Debug.LogError("InWater");
+                Debug.Log("InWater");
                 GetComponent<Animator>().enabled = false;
                 transform.GetChild(0).transform.localPosition = new Vector2(0, -0.15f);
                 GetComponent<SpriteRenderer>().sprite = halfSprite;
@@ -140,7 +140,6 @@ public class PlayerMovementController : MonoBehaviour
                 {
                     if (collision.gameObject.GetComponent<ObjectProperties>().isObjectHideAble == true)
                     {
-                       
                         LevelManager.Instance.Hide();
                         LevelManager.Instance.SetHideableObject(collision.gameObject);
                     }

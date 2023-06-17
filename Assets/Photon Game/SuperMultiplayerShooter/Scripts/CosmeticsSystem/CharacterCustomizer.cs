@@ -59,8 +59,8 @@ namespace Visyde
             // Refresh all inventory slots:
             for (int i = 0; i < curSlots.Count; i++)
             {
-              //  curSlots[i].curItem = SampleInventory.instance.items[i];
-               // curSlots[i].Refresh();
+                curSlots[i].curItem = SampleInventory.instance.items[i];
+                curSlots[i].Refresh();
             }
         }
 
@@ -68,14 +68,15 @@ namespace Visyde
         /// Equips an item from the database:
         /// </summary>
         public void Equip(CosmeticItemData item){
-            
-            //switch (item.itemType){
-            //    case CosmeticType.Hat:
-            //        int hat = Array.IndexOf(ItemDatabase.instance.hats, item);
-            //        DataCarrier.chosenHat = DataCarrier.chosenHat == hat ? -1 : hat;    // equipping an already equipped item will unequip it (value of -1 means 'no item')
-            //        break;
-            //    // add more here...
-            //}
+
+            switch (item.itemType)
+            {
+                case CosmeticType.Hat:
+                    int hat = Array.IndexOf(ItemDatabase.instance.hats, item);
+                    DataCarrier.chosenHat = DataCarrier.chosenHat == hat ? -1 : hat;    // equipping an already equipped item will unequip it (value of -1 means 'no item')
+                    break;
+                    // add more here...
+            }
 
             //RefreshSlots();
 

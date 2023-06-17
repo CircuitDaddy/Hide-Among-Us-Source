@@ -72,7 +72,7 @@ namespace Visyde
         }
 
         void RemoveThis(){
-            DestroyImmediate(GetComponent<AIController>());
+          //  DestroyImmediate(GetComponent<AIController>());
         }
 
         // Use this for initialization
@@ -384,153 +384,153 @@ namespace Visyde
         }
         void Jump()
         {
-            if (player.movementController.isGrounded)
-            {
-                lastGroundedYPos = transform.position.y;
-                player.Jump();
-            }
+            //if (player.movementController.isGrounded)
+            //{
+            //    lastGroundedYPos = transform.position.y;
+            //    player.Jump();
+            //}
         }
         void DoMove(Vector3 destination)
         {
-            if (!player.movementController.hasRigidbody) return;
+            //if (!player.movementController.hasRigidbody) return;
             
-            // Move on ground:
-            if (player.movementController.isGrounded)
-            {
-                readyToLand = false;
-                leftPlatform = false;
-                lastFoundPlatformHeight = null;
-                lastLandHitPos = null;
+            //// Move on ground:
+            //if (player.movementController.isGrounded)
+            //{
+            //    readyToLand = false;
+            //    leftPlatform = false;
+            //    lastFoundPlatformHeight = null;
+            //    lastLandHitPos = null;
 
-                // If decided to just stand still, then don't move:
-                if (doIdle && player.curWeapon)
-                {
-                    doMoveDir = 0;
-                }
-                else
-                {
-                    // If we have a ground ahead:
-                    if (SideHasGround(doMoveDir))
-                    {
-                        // Wander if arrived at destination x:
-                        if (Mathf.Abs(destination.x - transform.position.x) < 1 && (destination.y > (transform.position.y + colliderHeight) || destination.y < (transform.position.y - colliderHeight)))
-                        {
-                            wanderDelay = Random.Range(1f, 2f);
-                        }
-                        else
-                        {
-                            // If there's a wall:
-                            if (SideHasWall(doMoveDir))
-                            {
-                                // ...jump if we can jump onto it:
-                                if (CanJumpUpOntoAPlatform(doMoveDir))
-                                {
-                                    Jump();
-                                }
-                                // else, turn around:
-                                else
-                                {
-                                    doMoveDir *= -1;     // reverse movement direction
-                                }
-                            }
-                            // If there's no wall:
-                            else
-                            {
-                                // If destination is above us, try to jump up on a platform:
-                                if (destination.y > transform.position.y && CanJumpUpOntoAPlatform(doMoveDir))
-                                {
-                                    Jump();
-                                }
-                                // ... else, continue running forward
-                                else
-                                {
-                                    doMoveDir = destination.x > transform.position.x ? 1 : -1;     // move to destination's direction
-                                }
-                            }
-                        }
-                    }
-                    // If we're on a dead end:
-                    else
-                    {
-                        // If it's a gap, jump over it:
-                        if (SideHasGap(doMoveDir))
-                        {
-                            Jump();
-                        }
-                        // If it's not a gap, there might be a platform we can jump onto:
-                        else
-                        {
-                            // Check if there is and jump on it:
-                            if (CanJumpUpOntoAPlatform(doMoveDir))
-                            {
-                                doMoveDir = destination.x > transform.position.x ? 1 : -1;     // move to destination's direction
-                                Jump();
-                            }
-                            // If there's nothing:
-                            else
-                            {
-                                doMoveDir *= -1;
-                            }
-                        }
-                    }
-                }
-            }
-            // Try to land:
-            else
-            {
-                // Check if we have already left the previous platform:
-                if (!leftPlatform)
-                {
-                    leftPlatform = player.movementController.velocity.y <= 0 && !SideHasGround(Mathf.RoundToInt(doMoveDir) * -1) && transform.position.y >= (lastFoundPlatformHeight.HasValue ? lastFoundPlatformHeight.Value : transform.position.y);
-                }
-                // Find a landing ground if we have already left the previous platform:
-                else
-                {
-                    if (!readyToLand)
-                    {
-                        if (doMoveDir == 0) doMoveDir = 1;
+            //    // If decided to just stand still, then don't move:
+            //    if (doIdle && player.curWeapon)
+            //    {
+            //        doMoveDir = 0;
+            //    }
+            //    else
+            //    {
+            //        // If we have a ground ahead:
+            //        if (SideHasGround(doMoveDir))
+            //        {
+            //            // Wander if arrived at destination x:
+            //            if (Mathf.Abs(destination.x - transform.position.x) < 1 && (destination.y > (transform.position.y + colliderHeight) || destination.y < (transform.position.y - colliderHeight)))
+            //            {
+            //                wanderDelay = Random.Range(1f, 2f);
+            //            }
+            //            else
+            //            {
+            //                // If there's a wall:
+            //                if (SideHasWall(doMoveDir))
+            //                {
+            //                    // ...jump if we can jump onto it:
+            //                    if (CanJumpUpOntoAPlatform(doMoveDir))
+            //                    {
+            //                        Jump();
+            //                    }
+            //                    // else, turn around:
+            //                    else
+            //                    {
+            //                        doMoveDir *= -1;     // reverse movement direction
+            //                    }
+            //                }
+            //                // If there's no wall:
+            //                else
+            //                {
+            //                    // If destination is above us, try to jump up on a platform:
+            //                    if (destination.y > transform.position.y && CanJumpUpOntoAPlatform(doMoveDir))
+            //                    {
+            //                        Jump();
+            //                    }
+            //                    // ... else, continue running forward
+            //                    else
+            //                    {
+            //                        doMoveDir = destination.x > transform.position.x ? 1 : -1;     // move to destination's direction
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        // If we're on a dead end:
+            //        else
+            //        {
+            //            // If it's a gap, jump over it:
+            //            if (SideHasGap(doMoveDir))
+            //            {
+            //                Jump();
+            //            }
+            //            // If it's not a gap, there might be a platform we can jump onto:
+            //            else
+            //            {
+            //                // Check if there is and jump on it:
+            //                if (CanJumpUpOntoAPlatform(doMoveDir))
+            //                {
+            //                    doMoveDir = destination.x > transform.position.x ? 1 : -1;     // move to destination's direction
+            //                    Jump();
+            //                }
+            //                // If there's nothing:
+            //                else
+            //                {
+            //                    doMoveDir *= -1;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //// Try to land:
+            //else
+            //{
+            //    // Check if we have already left the previous platform:
+            //    if (!leftPlatform)
+            //    {
+            //        leftPlatform = player.movementController.velocity.y <= 0 && !SideHasGround(Mathf.RoundToInt(doMoveDir) * -1) && transform.position.y >= (lastFoundPlatformHeight.HasValue ? lastFoundPlatformHeight.Value : transform.position.y);
+            //    }
+            //    // Find a landing ground if we have already left the previous platform:
+            //    else
+            //    {
+            //        if (!readyToLand)
+            //        {
+            //            if (doMoveDir == 0) doMoveDir = 1;
 
-                        // If we can land forward:
-                        if (CanLandSide(doMoveDir))
-                        {
-                            readyToLand = true;
-                            doMoveDir = destination.x > transform.position.x ? 1 : -1;     // movement direction to destination
-                        }
-                        // ...but if we cannot land forward, just go back by reversing the direction of movement:
-                        else
-                        {
-                            doMoveDir = destination.x > transform.position.x ? -1 : 1;     // reverse direction
-                        }
-                    }
-                    else
-                    {
-                        // If we are already in the destination mid-air, stop moving:
-                        if (Mathf.Abs(transform.position.x - destination.x) < 0.1f)
-                        {
-                            doMoveDir = 0;
-                        }
-                        else
-                        {
-                            // Stop moving if there's already a ground below that we can land onto:
-                            if (HasGroundBelow())
-                            {
-                                doMoveDir = 0;
-                            }
-                            // Else, keep moving:
-                            else
-                            {
-                                if (lastLandHitPos.HasValue) doMoveDir = lastLandHitPos.Value.x > transform.position.x ? 1 : -1;    // Go to the landing area
-                            }
-                        }
-                    }
-                }
-            }
+            //            // If we can land forward:
+            //            if (CanLandSide(doMoveDir))
+            //            {
+            //                readyToLand = true;
+            //                doMoveDir = destination.x > transform.position.x ? 1 : -1;     // movement direction to destination
+            //            }
+            //            // ...but if we cannot land forward, just go back by reversing the direction of movement:
+            //            else
+            //            {
+            //                doMoveDir = destination.x > transform.position.x ? -1 : 1;     // reverse direction
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // If we are already in the destination mid-air, stop moving:
+            //            if (Mathf.Abs(transform.position.x - destination.x) < 0.1f)
+            //            {
+            //                doMoveDir = 0;
+            //            }
+            //            else
+            //            {
+            //                // Stop moving if there's already a ground below that we can land onto:
+            //                if (HasGroundBelow())
+            //                {
+            //                    doMoveDir = 0;
+            //                }
+            //                // Else, keep moving:
+            //                else
+            //                {
+            //                    if (lastLandHitPos.HasValue) doMoveDir = lastLandHitPos.Value.x > transform.position.x ? 1 : -1;    // Go to the landing area
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
-            // Apply the movement direction to the main movement variable:
-            xMovement = doMoveDir;
+            //// Apply the movement direction to the main movement variable:
+            //xMovement = doMoveDir;
 
-            // Look at destination:
-            targetAimPos = destination;
+            //// Look at destination:
+            //targetAimPos = destination;
         }
 
         // World checkers:

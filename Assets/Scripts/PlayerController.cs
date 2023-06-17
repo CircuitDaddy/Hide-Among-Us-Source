@@ -7,6 +7,8 @@ using Visyde;
 using UnityEngine.SceneManagement;
 using TMPro;
 /// </summary>
+//namespace Visyde
+//{
 
 public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
 {
@@ -15,8 +17,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [System.Serializable]
     public class Character
     {
-     //   public UnityEditor.U2D.Animation.CharacterData data;
-        public Animator animator;
+            public CharacterData data;
+            //   public UnityEditor.U2D.Animation.CharacterData data;
+            public Animator animator;
 
         // For cosmetics:
         public Transform hatPoint;
@@ -31,22 +34,22 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     public float grenadeThrowForce = 20;
 
     [Header("References:")]
- //   public AIController ai;                                         // the AI controller for this player (only gets enabled if this is a bot, disabled when not)
- //   public AudioSource aus;                                         // the AudioSource that will play the player sounds
-    public PlayerMovementController movementController;       
+        public AIController ai;                                         // the AI controller for this player (only gets enabled if this is a bot, disabled when not)
+        public AudioSource aus;                                         // the AudioSource that will play the player sounds
+        public PlayerMovementController movementController;       
             // the one that controls the rigidbody movement
-  //  public Transform weaponHandler;                                 // the transform that holds weapon prefabs
-  //  public Transform grenadePoint;                                  // where grenades spawn
-  //  public MeleeWeaponController meleeWeapon;                       // the melee weapon controller
-  //  public CosmeticsManager cosmeticsManager;                       // the component that manages the cosmetic side of things
-   // public GameObject invulnerabilityIndicator;                     // shown when player is invulnerable
-  //  public AudioClip[] hurtSFX;                                     // audios that are played randomly when getting damaged
- //   public AudioClip throwGrenadeSFX;                               // audio that's played when throwing grenades
-  //  public GameObject spawnVFX;                                     // the effect that's shown on spawn
- //   public EmotePopup emotePopupPrefab;                             // emote prefab to spawn
+    public Transform weaponHandler;                                 // the transform that holds weapon prefabs
+    public Transform grenadePoint;                                  // where grenades spawn
+    public MeleeWeaponController meleeWeapon;                       // the melee weapon controller
+        public CosmeticsManager cosmeticsManager;                       // the component that manages the cosmetic side of things
+        public GameObject invulnerabilityIndicator;                     // shown when player is invulnerable
+        public AudioClip[] hurtSFX;                                     // audios that are played randomly when getting damaged
+        public AudioClip throwGrenadeSFX;                               // audio that's played when throwing grenades
+        public GameObject spawnVFX;                                     // the effect that's shown on spawn
+        public EmotePopup emotePopupPrefab;                             // emote prefab to spawn
 
-    // In-Game:
-    public PlayerInstance playerInstance;
+        // In-Game:
+        public PlayerInstance playerInstance;
     public PlayerInstance lastDamageDealer { get; protected set; }  // the last player to damage us (used to track who killed us and etc.)
     public int curCharacterID { get; protected set; }               // determines which character is used for this player
     public int health { get; protected set; }                       // current health amount
@@ -79,16 +82,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     Vector2 lastPos, networkPos;
     float lag;
 
-    // Returns the chosen character:
-    //public Character character
-    //{
-    //    get
-    //    {
-    //        return characters[curCharacterID];
-    //    }
-    //}
-    // Returns true if invulnerable:
-    public bool invulnerable
+        // Returns the chosen character:
+        public Character character
+        {
+            get
+            {
+                return characters[curCharacterID];
+            }
+        }
+        // Returns true if invulnerable:
+        public bool invulnerable
     {
         get
         {
@@ -122,7 +125,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         if (gm)
         {
             // Add this to the player controllers list:
-          //  gm.playerControllers.Add(this);
+            gm.playerControllers.Add(this);
         }
     }
     public override void OnDisable()
@@ -133,7 +136,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
             gm.controlsManager.jump -= Jump;
 
             // Remove from the player controllers list
-          //  gm.playerControllers.Remove(this);
+           gm.playerControllers.Remove(this);
         }
     }
     void Start()
@@ -164,17 +167,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         //curGrenadeCount = character.data.grenades;
 
         // Apply the cosmetics:
-      //  cosmeticsManager.Refresh(playerInstance.cosmeticItems);
+       // cosmeticsManager.Refresh(playerInstance.cosmeticItems);
 
         // Spawn our own emote popup:
         //curEmote = Instantiate(emotePopupPrefab, Vector3.zero, Quaternion.identity);
         //curEmote.owner = this;
 
         // If we're the local player, let the camera know:
-        if (playerInstance.isMine)
-        {
-            //gm.gameCam.target = this;
-        }
+        //if (playerInstance.isMine)
+        //{
+        //    gm.gameCam.target = this;
+        //}
 
         // Let the movement controller know how to behave:
         movementController.isMine = photonView.IsMine;
@@ -189,9 +192,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
             PhotonNetwork.SendRate = 16;
             PhotonNetwork.SerializationRate = 16;
         }
+            curGrenadeCount = 10000;
+            photonView.RPC(nameof(SetName), RpcTarget.AllBuffered, PhotonNetwork.NickName);
     }
 
-    
+
 
     void Update()
     {
@@ -255,7 +260,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
                 // Melee attack rate:
                 if (curMeleeAttackRate < 1)
                 {
-                  //  curMeleeAttackRate += Time.deltaTime * meleeWeapon.attackSpeed;
+                    curMeleeAttackRate += Time.deltaTime * meleeWeapon.attackSpeed;
                 }
 
                 // Multikill timer:
@@ -308,7 +313,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         }
 
         // Handling death:
-        if (health == 1000 && !isDead)
+        if (health <= 0 && !isDead)
         {
             Debug.Log("Die?");
 
@@ -323,7 +328,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
             // Update the others about our status:
             if (photonView.IsMine)
             {
-                photonView.RPC("UpdateOthers", RpcTarget.All, health, shield);
+                photonView.RPC(nameof(UpdateOthers), RpcTarget.All, health, shield);
 
                 // If this is local player's, let the game manager know this is ours and is now dead:
                 if (isPlayerOurs && !gm.isGameOver) gm.dead = true;
@@ -471,27 +476,37 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         //    curWeapon.owner = this;
         //}
     }
-
+    public void OnAttackControls()
+    {
+        if (!playerInstance.Assasin)
+        {
+            gm.useMobileControls = false;
+        }
+    }
     public void RestartPlayer()
     {
         // Get the dedicated player instance for this player:
-       // playerInstance = gm.GetPlayerInstance(isBot ? ai.botID : photonView.Owner.ActorNumber);
-
-        // Subscibe to Controls Manager's jump event if player is ours:
-        if (isPlayerOurs)
+        //playerInstance = gm.GetPlayerInstance(isBot ? ai.botID : photonView.Owner.ActorNumber);
+        if (gm != null)
         {
-            gm.controlsManager.jump += Jump;
+            playerInstance = gm.GetPlayerInstance(photonView.Owner.ActorNumber);
+            OnAttackControls();
         }
+        // Subscibe to Controls Manager's jump event if player is ours:
+        //if (isPlayerOurs)
+        //{
+        //    gm.controlsManager.jump += Jump;
+        //}
 
         // Get the chosen character of this player (we only need the index of the chosen character in DataCarrier's characters array):
-        int chosenCharacter = playerInstance.character;
-        for (int i = 0; i < characters.Length; i++)
-        {
-            //if (characters[i].data == DataCarrier.characters[chosenCharacter])
-            //{
-            //    curCharacterID = i;
-            //}
-        }
+        //int chosenCharacter = playerInstance.character;
+        //for (int i = 0; i < characters.Length; i++)
+        //{
+        //    if (characters[i].data == DataCarrier.characters[chosenCharacter])
+        //    {
+        //        curCharacterID = i;
+        //    }
+        //}
 
         // Enable only the chosen character's graphics:
         for (int i = 0; i < characters.Length; i++)
@@ -501,6 +516,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
 
         // Get the stat infos from the character data:
       //  health = character.data.maxHealth;
+        health = 200;
 
         // Remove any weapon:
         DisarmItem();
@@ -538,51 +554,51 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     {
         if (curMeleeAttackRate >= 1)
         {
-            photonView.RPC("MeleeAttack", RpcTarget.All);
+                photonView.RPC(nameof(MeleeAttack), RpcTarget.All);
             curMeleeAttackRate = 0;
         }
     }
-    public void OwnerThrowGrenade()
-    {
-        if (curGrenadeCount > 0)
+        public void OwnerThrowGrenade()
         {
-            curGrenadeCount -= 1;
-            photonView.RPC("ThrowGrenade", RpcTarget.All);
+            if (curGrenadeCount > 0)
+            {
+                curGrenadeCount -= 1;
+                photonView.RPC(nameof(ThrowGrenade), RpcTarget.All);
+            }
         }
-    }
 
-    void Die()
+        void Die()
     {
         if (!gm.isGameOver)
         {
-            // Multikill (if we are the killer and we are not the one dying):
-         //   PlayerController killerPc = gm.GetPlayerControllerOfPlayer(lastDamageDealer);
+                // Multikill (if we are the killer and we are not the one dying):
+                PlayerController killerPc = gm.GetPlayerControllerOfPlayer(lastDamageDealer);
 
-            // If killer matched:
-            //if (killerPc)
-            //{
-            //    // If the killer is ours (bots are also ours if we're the master client):
-            //    if (killerPc.playerInstance.playerID != playerInstance.playerID && (killerPc.isPlayerOurs || (PhotonNetwork.IsMasterClient && killerPc.isBot)))
-            //    {
-            //        killerPc.curMultikill += 1;
-            //        killerPc.curMultikillDelay = gm.multikillDuration;
+               // If killer matched:
+                if (killerPc)
+                {
+                    // If the killer is ours (bots are also ours if we're the master client):
+                    if (killerPc.playerInstance.playerID != playerInstance.playerID && (killerPc.isPlayerOurs || (PhotonNetwork.IsMasterClient && killerPc.isBot)))
+                    {
+                        killerPc.curMultikill += 1;
+                        killerPc.curMultikillDelay = gm.multikillDuration;
 
-            //        // Add a bonus score to killer for doing a multi kill:
-            //        if (killerPc.curMultikill > 1)
-            //        {
-            //            int scoreToAdd = gm.multiKillMessages[Mathf.Clamp(killerPc.curMultikill - 1, 0, gm.multiKillMessages.Length - 1)].bonusScore;
-            //            gm.AddScore(lastDamageDealer, false, false, scoreToAdd);
-            //        }
-            //    }
-            //}
+                        // Add a bonus score to killer for doing a multi kill:
+                        if (killerPc.curMultikill > 1)
+                        {
+                            int scoreToAdd = gm.multiKillMessages[Mathf.Clamp(killerPc.curMultikill - 1, 0, gm.multiKillMessages.Length - 1)].bonusScore;
+                            gm.AddScore(lastDamageDealer, false, false, scoreToAdd);
+                        }
+                    }
+                }
 
-            // Let GameManager handle the other death related stuff (scoring, display kill/death message etc...):
-          //  gm.SomeoneDied(playerInstance.playerID, lastDamageDealer.playerID);
+                //Let GameManager handle the other death related stuff(scoring, display kill/ death message etc...):
+            gm.SomeoneDied(playerInstance.playerID, lastDamageDealer.playerID);
 
-            // and then destroy (give a time for the death animation):
-            if (photonView.IsMine)
+                // and then destroy (give a time for the death animation):
+                if (photonView.IsMine)
             {
-                Invoke("PhotonDestroy", 1f);
+                Invoke(nameof(PhotonDestroy), 1f);
             }
         }
 
@@ -631,7 +647,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     /// <param name="gun">If set to <c>true</c>, "value" will be used as weapon id.</param>
     public void ApplyDamage(int fromPlayer, int value, bool gun)
     {
-        photonView.RPC("Hurt", RpcTarget.AllBuffered, fromPlayer, value, gun);
+        photonView.RPC(nameof(Hurt), RpcTarget.AllBuffered, fromPlayer, value, gun);
+    }
+    [PunRPC]
+    public void SetName(string PlayerName)
+    {
+        gameObject.name = PlayerName;
     }
     [PunRPC]
     void Hurt(int fromPlayer, int value, bool gun)
@@ -678,19 +699,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
                 }
 
                 // Damage popup:
-                if (gm.damagePopups)
-                {
-                  //  gm.pooler.Spawn("DamagePopup", weaponHandler.position).GetComponent<DamagePopup>().Set(finalDamage);
-                }
+                //if (gm.damagePopups)
+                //{
+                //    gm.pooler.Spawn("DamagePopup", weaponHandler.position).GetComponent<DamagePopup>().Set(finalDamage);
+                //}
 
                 // Sound:
                // aus.PlayOneShot(hurtSFX[Random.Range(0, hurtSFX.Length)]);
 
                 // Do the "hurt screen" effect:
-                if (isPlayerOurs)
-                {
+                //if (isPlayerOurs)
+                //{
                 //    gm.ui.Hurt();
-                }
+                //}
                 lastDamageDealer = gm.GetPlayerInstance(fromPlayer);
             }
         }
@@ -718,23 +739,22 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     [PunRPC]
     public void ThrowGrenade()
     {
-        // Sound:
-        //aus.PlayOneShot(throwGrenadeSFX);
+            //Sound:
+            //    aus.PlayOneShot(throwGrenadeSFX);
+            // Grenade spawning:
+            if (photonView.IsMine)
+            {
+                Vector2 p1 = new Vector2(grenadePoint.position.x, grenadePoint.position.y);
+                Vector2 p2 = new Vector2(weaponHandler.position.x, weaponHandler.position.y);
+                object[] data = new object[] { (p1 - p2) * grenadeThrowForce, playerInstance.playerID }; // the instantiation data of a grenade includes the direction of the throw and the owner's player ID 
 
-        //// Grenade spawning:
-        //if (photonView.IsMine)
-        //{
-        //    Vector2 p1 = new Vector2(grenadePoint.position.x, grenadePoint.position.y);
-        //    Vector2 p2 = new Vector2(weaponHandler.position.x, weaponHandler.position.y);
-        //    object[] data = new object[] { (p1 - p2) * grenadeThrowForce, playerInstance.playerID }; // the instantiation data of a grenade includes the direction of the throw and the owner's player ID 
-
-        //    PhotonNetwork.Instantiate(grenadePrefab, grenadePoint.position, Quaternion.identity, 0, data);
-        //}
-    }
+                PhotonNetwork.Instantiate(grenadePrefab, grenadePoint.position, Quaternion.identity, 0, data);
+            }
+        }
     [PunRPC]
     public void MeleeAttack()
     {
-       // meleeWeapon.Attack(photonView.IsMine, this);
+        meleeWeapon.Attack(photonView.IsMine, this);
     }
     [PunRPC]
     public void GrabWeapon(int id, int getFromSpawnPoint)
@@ -762,12 +782,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         // HEALTH:
         if (thePowerUp.fullRefillHealth)
         {
-           // health = character.data.maxHealth;
+            //health = character.data.maxHealth;
+            health = 200;
         }
         else
         {
             health += thePowerUp.addedHealth;
-            //health = Mathf.Clamp(health, 0, character.data.maxHealth);
+            health = Mathf.Clamp(health, 0, 200);
         }
         // SHIELD:
         if (thePowerUp.fullRefillShield)
@@ -786,7 +807,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
         if (curWeapon && thePowerUp.fullRefillAmmo) curWeapon.curAmmo = curWeapon.ammo;
 
         // Update others about our current vital stats (health and shield):
-        photonView.RPC("UpdateOthers", RpcTarget.Others, health, shield);
+        photonView.RPC(nameof(UpdateOthers), RpcTarget.Others, health, shield);
     }
 
     [PunRPC]
@@ -866,3 +887,4 @@ public class PlayerController : MonoBehaviourPunCallbacks, IInRoomCallbacks
     //    }
     //}
 }
+//}

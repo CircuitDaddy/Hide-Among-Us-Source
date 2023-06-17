@@ -27,13 +27,13 @@ public class ObjectProperties : MonoBehaviour
 
        
        yield return new WaitForSeconds(timeToMakeItHideable);
-        Debug.LogError("kjksj" + timeToMakeItHideable);
+        Debug.Log("kjksj" + timeToMakeItHideable);
         isObjectHideAble = true;
     }
 
     public void PlayerHidden()
     {
-        Debug.LogError("Player is Hiding");
+        Debug.Log("Player is Hiding");
         isObjectHideAble = false;
         StartCoroutine(MakeObjectHidableRoutine());
     }

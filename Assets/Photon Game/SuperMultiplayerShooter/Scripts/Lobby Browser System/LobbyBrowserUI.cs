@@ -26,6 +26,7 @@ namespace Visyde
         public Text mapNameText;
         public SelectorUI mapSelector;
         public SelectorUI playerNumberSelector;
+        public SelectorUI AssasinNumberSelector;
         public Toggle enableBotsOption;
 
         [Header("Joined Screen:")]
@@ -147,11 +148,9 @@ namespace Visyde
                
             }
         }
-        public void Create(){
-          
-            Connector.instance.CreateCustomGame(mapSelector.curSelected, playerNumberSelector.items[playerNumberSelector.curSelected].value, enableBotsOption.isOn);
-            
-                  
+        public void Create()
+        {
+            Connector.instance.CreateCustomGame(mapSelector.curSelected, playerNumberSelector.items[playerNumberSelector.curSelected].value, enableBotsOption.isOn, AssasinNumberSelector.items[AssasinNumberSelector.curSelected].value);
         }
         public void LoadNextScene()
     {

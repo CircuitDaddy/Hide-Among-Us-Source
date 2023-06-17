@@ -47,7 +47,6 @@ namespace Visyde
                     {
                         if (cols[i].CompareTag("Player"))
                         {
-
                             // Get the "PlayerController" component of the affected gameObject:
                             PlayerController p = cols[i].GetComponent<PlayerController>();
 
@@ -55,7 +54,6 @@ namespace Visyde
                             if (p.playerInstance != ourPlayer.playerInstance && !p.invulnerable)
                             {
                                 p.photonView.RPC("Hurt", RpcTarget.All, ourPlayer.playerInstance.playerID, damage, false);
-
                                 // VFX
                                 GameManager.instance.pooler.Spawn("BodyHit", p.transform.position);
                             }

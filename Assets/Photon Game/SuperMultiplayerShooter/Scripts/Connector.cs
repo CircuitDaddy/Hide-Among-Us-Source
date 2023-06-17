@@ -163,8 +163,8 @@ namespace Visyde
             PhotonNetwork.JoinRoom(room.Name);
         }
 
-       
-            public void CreateCustomGame(int selectedMap, int maxPlayers, bool allowBots)
+
+        public void CreateCustomGame(int selectedMap, int maxPlayers, bool allowBots, int Assasins)
         {
             if (PhotonNetwork.IsConnectedAndReady)
             {
@@ -173,7 +173,7 @@ namespace Visyde
                 h.Add("map", selectedMap);
                 h.Add("customAllowBots", allowBots);
                 h.Add("isInMatchmaking", false);
-
+                h.Add("Assasins", Assasins);
                 int rnd = Random.Range(0, 9) + Random.Range(3, 10);
               
                 PhotonNetwork.CreateRoom(PhotonNetwork.NickName + rnd, new RoomOptions()
@@ -192,7 +192,7 @@ namespace Visyde
             // Start creating bots (if bots are allowed) as this will fill out the empty players:
             if (inCustom && !loadNow)
             {
-                Debug.LogError("Entered");
+                Debug.Log("Entered");
                 // Create the bots if allowed:
                // if ((bool)PhotonNetwork.CurrentRoom.CustomProperties["customAllowBots"])
                // {
@@ -420,6 +420,7 @@ namespace Visyde
                 h.Add("started", false);
                 h.Add("map", Random.Range(0, maps.Length));
                 h.Add("isInMatchmaking", true);
+                h.Add("Assasins", 1);
 
                 // Then create the room, with the prepared room properties in the RoomOptions argument:
                 PhotonNetwork.CreateRoom(null, new RoomOptions()

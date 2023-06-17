@@ -29,7 +29,8 @@ namespace Visyde
         public Text nameText;
         public Text valueText;
         public Image preview;
-
+        public SelectorUI NumberofPlayers;
+        public bool assasins;
         [Space]
         public UnityEvent onChangeSelected;
 
@@ -64,7 +65,14 @@ namespace Visyde
 
                 if (!loop)
                 {
-                    next.interactable = curSelected < items.Length - 1;
+                    if (assasins)
+                    {
+                        next.interactable = NumberofPlayers.items[NumberofPlayers.curSelected].value / 2 == items[curSelected + 1].value && curSelected < items.Length - 1;
+                    }
+                    else
+                    {
+                        next.interactable = curSelected < items.Length - 1;
+                    }
                     prev.interactable = curSelected > 0;
                 }
             }
@@ -72,6 +80,7 @@ namespace Visyde
 
         public void Next()
         {
+            
             if (curSelected >= items.Length - 1)
             {
                 if (loop)

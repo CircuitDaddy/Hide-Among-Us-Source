@@ -15,6 +15,7 @@ namespace Visyde
         public int playerID;                            // unique player ID (bots have their own player ID's different from the host's/MasterClient's)
         public string playerName;
         public int character;
+        public bool Assasin;
         public Player punPlayer { get; protected set; }
 
         // Cosmetics:
@@ -28,7 +29,8 @@ namespace Visyde
         public int deaths;
         public int otherScore;                          
 
-        public PlayerInstance(int id, string name, bool isMine, bool bot, int character, Cosmetics cosmeticItems, Player thePlayer){
+        public PlayerInstance(int id, string name, bool isMine, bool bot, int character, Cosmetics cosmeticItems, Player thePlayer, bool assasin)
+        {
             playerID = id;
             playerName = name;
             isBot = bot;
@@ -36,8 +38,9 @@ namespace Visyde
             this.isMine = isMine;
             this.character = character;
             this.cosmeticItems = cosmeticItems;
+            Assasin = assasin;
         }
-        public PlayerInstance(int id, string name, bool isMine, bool bot, int character, Cosmetics cosmeticItems, int kills, int deaths, int otherScore, Player thePlayer)
+        public PlayerInstance(int id, string name, bool isMine, bool bot, int character, Cosmetics cosmeticItems, int kills, int deaths, int otherScore, Player thePlayer,bool assasin)
         {
             playerID = id;
             playerName = name;
@@ -51,6 +54,7 @@ namespace Visyde
             this.kills = kills;
             this.deaths = deaths;
             this.otherScore = otherScore;
+            Assasin= assasin;
         }
 
         // Set stats directly:

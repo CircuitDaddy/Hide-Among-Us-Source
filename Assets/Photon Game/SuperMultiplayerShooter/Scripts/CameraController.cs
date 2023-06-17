@@ -82,7 +82,7 @@ namespace Visyde
             {
                 if (gm.gameStarted)
                 {
-                    finalZoom = normalZoom + (zoomChangeFactor * target.movementController.velocity.magnitude) + (target.curWeapon ? target.curWeapon.sightRange : 0f) * 0.4f;
+                    //finalZoom = normalZoom + (zoomChangeFactor * target.movementController.velocity.magnitude) + (target.curWeapon ? target.curWeapon.sightRange : 0f) * 0.4f;
                 }
                 else
                 {
